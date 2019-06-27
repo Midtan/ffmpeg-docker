@@ -1,3 +1,4 @@
+## building
 FROM alpine:edge AS builder
 
 RUN tail /etc/apk/repositories -n 1|sed s/community/testing/>>/etc/apk/repositories
@@ -40,7 +41,7 @@ RUN apk add --no-cache --update --virtual .build-deps \
 WORKDIR /tmp
 RUN curl -s http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar jxf - -C .
 WORKDIR /tmp/ffmpeg
-RUN ./configure --disable-debug --enable-static --enable-avresample --enable-fontconfig --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-nonfree --enable-openssl --enable-postproc --enable-shared --enable-small --enable-version3
+RUN ./configure --disable-debug --enable-static --enable-swresample --enable-fontconfig --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-nonfree --enable-openssl --enable-postproc --enable-shared --enable-small --enable-version3
 RUN make -j 8
 RUN make install
 
