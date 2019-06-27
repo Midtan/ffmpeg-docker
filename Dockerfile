@@ -1,7 +1,9 @@
-FROM alpine:edge
+FROM alpine:edge AS builder
+
+RUN tail /etc/apk/repositories -n 1|sed s/community/testing/>>/etc/apk/repositories
+RUN apk update && apk upgrade
 
 # Installing build dependencies
-RUN tail /etc/apk/repositories -n 1|sed s/community/testing/>>/etc/apk/repositories
 RUN apk add --no-cache --update --virtual .build-deps \
     autoconf \
     automake \
@@ -33,23 +35,6 @@ RUN apk add --no-cache --update --virtual .build-deps \
     libtheora-dev \
     linux-headers \
     opus-dev
-
-# Installing runtime dependencies
-RUN apk add --no-cache --update --virtual .runtime-deps \
-    libtheora  \
-    libwebp \
-    opus \
-    libass \
-    freetype \
-    x265 \
-    x264-libs \
-    lame \
-    libvorbis \
-    libvpx \
-    openssl \
-    fdk-aac \
-    libjpeg-turbo \
-    tiff
 
 # Building ffmpeg
 WORKDIR /tmp
