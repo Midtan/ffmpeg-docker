@@ -1,5 +1,5 @@
 ## building
-FROM alpine:edge AS builder
+FROM alpine:latest AS builder
 
 RUN tail /etc/apk/repositories -n 1|sed s/community/testing/>>/etc/apk/repositories
 RUN apk update && apk upgrade
