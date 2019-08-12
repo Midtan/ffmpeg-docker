@@ -7,6 +7,7 @@ RUN tail /etc/apk/repositories -n 1|sed s/community/testing/>>/etc/apk/repositor
 RUN apk add --no-cache --update --virtual .build-deps \
     autoconf \
     automake \
+    cmake \
     libtool \
     git \
     python3-dev \
@@ -18,6 +19,7 @@ RUN apk add --no-cache --update --virtual .build-deps \
     curl \
     nasm \
     tar \
+    gzip \
     bzip2 \
     zlib-dev \
     openssl-dev \
@@ -35,6 +37,35 @@ RUN apk add --no-cache --update --virtual .build-deps \
     libtheora-dev \
     linux-headers \
     opus-dev
+
+# Building dependencies
+
+# Building x264
+WORKDIR /tmp/x264
+RUN curl -s ftp://ftp.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2 | tar jxf - -C . --strip-components 1
+RUN ./configure --enable-static --disable-shared
+RUN make -j 8 && make install
+RUN cp libx264.a /usr/local/libass
+RUN cp x264_config.h x264.h /usr/local/include
+
+# Building x265
+WORKDIR /tmp/x265
+# This should not depend on a specific x265 version
+RUN curl -s -L https://bitbucket.org/multicoreware/x265/downloads/x265_3.1.2.tar.gz | tar zxf - -C . --strip-components 1
+WORKDIR /tmp/x265/build/linux
+RUN cmake ../../source -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=OFF
+RUN ./multilib.sh
+RUN cp ./8bit/libx265.a /usr/local/lib/libx265.a
+RUN cp ./8bit/x265.pc /usr/local/lib/pkgconfig/
+RUN cp ./8bit/x265_config.h /usr/local/include/
+RUN cp ../../source/x265.h /usr/local/include 
+
+# Building fdk-aac
+WORKDIR /tmp/fdk-aac
+RUN curl -s -L https://github.com/mstorsjo/fdk-aac/archive/v2.0.0.tar.gz | tar zxf - -C . --strip-components 1
+RUN ./autogen.sh
+RUN ./configure --enable-static --disable-shared
+RUN make -j 8 && make install
 
 # Building ffmpeg
 WORKDIR /tmp
