@@ -91,8 +91,8 @@ RUN make -j 8 && make install
 
 # Building theora
 WORKDIR /tmp/theora
-# This should not depend on a specific version
-RUN curl -s -L https://ftp.osuosl.org/pub/xiph/releases/theora/libtheora-1.1.1.tar.gz | tar zxf - -C . --strip-components 1
+RUN git clone https://github.com/xiph/theora.git .
+RUN autogen.sh
 RUN ./configure --enable-static --disable-shared 
 RUN make -j 8 && make install
 
