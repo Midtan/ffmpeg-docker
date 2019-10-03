@@ -112,9 +112,8 @@ RUN ./configure --enable-static --disable-shared
 RUN make -j 8 && make install
 
 # Building ffmpeg
-WORKDIR /tmp
-RUN curl -s http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar jxf - -C .
 WORKDIR /tmp/ffmpeg
+RUN curl -s http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2 | tar jxf - -C . --strip-components 1
 RUN ./configure --disable-debug --enable-static --enable-nonfree --enable-postproc --disable-shared --enable-small --enable-version3 --enable-swresample --enable-fontconfig --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-openssl
 RUN make -j 8
 
