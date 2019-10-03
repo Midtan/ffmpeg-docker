@@ -42,7 +42,7 @@ RUN apk add --no-cache --update --virtual .build-deps \
 
 # Building x264
 WORKDIR /tmp/x264
-RUN curl -s ftp://ftp.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2 | tar jxf - -C . --strip-components 1
+RUN curl -s --ftp-method nocwd ftp://ftp.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2 | tar jxf - -C . --strip-components 1
 RUN ./configure --enable-static --disable-shared
 RUN make -j 8 && make install
 RUN cp libx264.a /usr/local/libass
